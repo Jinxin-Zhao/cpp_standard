@@ -90,7 +90,7 @@ auto sum(Args ...ts) {
 
 void demo_fold_expr() {
     int a {sum(1,2,3,4,5)};
-    cout << "demo fold expression " << a << endl;
+    std::cout << "demo fold expression " << a << endl;
 }
 
 // constexpr lambda function

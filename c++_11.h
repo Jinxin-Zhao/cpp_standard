@@ -13,6 +13,20 @@
 
 using namespace std;
 
+/* forward */
+
+void func_1(int & tmp) {
+    cout << "lvalue " << tmp << std::endl;
+}
+
+void func_1(int && tmp) {
+    cout << "rvalue " << tmp << std::endl;
+}
+
+template <typename T>
+void func(T && t) {
+    func_1(std::forward<T>(t));
+}
 
 namespace test_c11 {
     // constexpr

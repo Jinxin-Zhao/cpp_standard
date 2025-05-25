@@ -17,7 +17,7 @@ int main() {
 
     demo_fold_expr();
 
-    optional<int> op = ConvertToInt("-12345");
+    std::optional<int> op = ConvertToInt("-12345");
     std::cout << op.value() << std::endl;
 
     demo_struct_func();
