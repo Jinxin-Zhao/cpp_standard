@@ -13,7 +13,7 @@
 
 using namespace std;
 
-/* forward */
+/* move & forward */
 
 void func_1(int & tmp) {
     cout << "lvalue " << tmp << std::endl;
@@ -26,6 +26,52 @@ void func_1(int && tmp) {
 template <typename T>
 void func(T && t) {
     func_1(std::forward<T>(t));
+}
+
+/* notice of move (rvalue) */
+// 1. do not abuse move, only use it when you really want to move the resource
+// 2. add noexcept to move constructor and move assignment operator if possible
+class SelfString {
+public:
+    SelfString(const char * str) {
+        if (str) {
+            m_size = strlen(str);
+            m_data = new char[m_size + 1];
+            strcpy(m_data, str);
+        } else {
+            m_size = 0;
+            m_data = new char[1];
+            m_data[0] = '\0';
+        }
+    }
+    SelfString(const SelfString & other) {
+        m_size = other.m_size;
+        m_data = new char[m_size + 1];
+        strcpy(m_data, other.m_data);
+    }
+
+    SelfString(SelfString && other) noexcept {
+        m_size = other.m_size;
+        m_data = other.m_data;
+        other.m_size = 0;
+        other.m_data = nullptr;
+    }
+    ~SelfString () {
+        if (m_data) {
+            delete[] m_data;
+            m_data = nullptr;
+        }
+    }
+
+private:
+    char * m_data;
+    size_t m_size;
+};
+
+SelfString createString() {
+    SelfString str("hello");
+    // donott write return std::move(str);, myabe the compiler will not optimize it(RVO)
+    return str; // will call move constructor if available
 }
 
 namespace test_c11 {
@@ -66,7 +112,6 @@ namespace test_c11 {
         }
     }
 }
-
 
 void little_sleep(std::chrono::microseconds us) {
     auto start = std::chrono::high_resolution_clock::now();

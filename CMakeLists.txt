@@ -5,4 +5,5 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_executable(cstandard main.cpp c++_23.cc)
 
-target_link_libraries(cstandard pthread rt tbb)
+#tbb
+target_link_libraries(cstandard pthread rt)
